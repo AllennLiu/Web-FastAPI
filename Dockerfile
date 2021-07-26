@@ -1,9 +1,14 @@
 FROM python:3.7
 
-RUN pip install fastapi uvicorn
+ENV workdir=/usr/src
 
-EXPOSE 80
+COPY . /usr/src
 
-COPY ./app /app
+WORKDIR $workdir
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install -r requirements.txt
+
+EXPOSE 7788
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7788"]
