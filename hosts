@@ -1,0 +1,18 @@
+# This configuration is default ansible 'hosts' file.
+#
+# It must be located in /etc/ansible/hosts
+[production]
+<SRV_IP>
+
+[production:vars]
+ansible_ssh_pass='<SRV_PASS>'
+ansible_ssh_user='<SRV_USER>'
+ansible_ssh_port='<SRV_PORT>'
+
+[staging]
+10.99.104.251
+
+[staging:vars]
+ansible_ssh_pass='vagrant'
+ansible_ssh_user='root'
+ansible_ssh_port='2210'

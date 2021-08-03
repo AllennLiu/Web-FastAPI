@@ -1,0 +1,30 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  ipt-mongo:
+    image: mongo
+    restart: always
+    expose:
+      - 27017
+    ports:
+      - 8789:27017
+    volumes:
+      - /srv/mongo/db:/data/db
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: sit2@ipt
+
+  ipt-mongo-express:
+    image: mongo-express
+    restart: always
+    expose:
+      - 8081
+    ports:
+      - 8790:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: ipt-mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: sit2@ipt

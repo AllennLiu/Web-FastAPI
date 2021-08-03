@@ -1,0 +1,186 @@
+body {
+    background-color: white;
+}
+
+#loginbox {
+    margin-top: 30px;
+}
+
+#loginbox > div:first-child {
+    padding-bottom: 10px;
+}
+
+.iconmelon {
+    display: block;
+    margin: auto;
+}
+
+#form > div {
+    margin-bottom: 25px;
+    margin-left: 25px;
+}
+
+#form > div:last-child {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.panel {
+    background-color: transparent;
+}
+
+.panel-body {
+    padding-top: 30px;
+    background-color: rgba(2555,255,255,.3);
+}
+
+#particles {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: -2;
+}
+
+.iconmelon,
+.im {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: block;
+  fill: #525151;
+}
+
+.iconmelon:after,
+.im:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.message-box-custom {
+  width: 98%;
+  display: none;
+  margin-left: 1%;
+  margin-right: 1%;
+  opacity: 85%;
+}
+
+/*
+  Following is Username/Password input style
+*/
+
+.pull-right {
+    float: right;
+}
+
+.pull-left {
+    float: left;
+}
+
+.clear-fix {
+    clear:both;
+}
+
+div.logo {
+    text-align: center;
+    margin: 20px 20px 30px 20px;
+    fill: #566375;
+}
+
+.head {
+    padding:40px 0px 10px 0
+}
+
+.logo-active {
+    fill: #44aacc !important;
+}
+
+div.form-item{
+    position: relative;
+    display: block;
+    margin-bottom: 40px;
+}
+
+input {
+    transition: all .2s ease;
+}
+
+input.form-style {
+	color:#8a8a8a;
+	display: block;
+	width: 90%;
+	height: 44px;
+	padding: 5px 5%;
+	border:1px solid #ccc;
+	-moz-border-radius: 27px;
+	-webkit-border-radius: 27px;
+	border-radius: 27px;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	background-color: #fff;
+	font-family:'HelveticaNeue','Arial', sans-serif;
+	font-size: 105%;
+	letter-spacing: .8px;
+}
+
+div.form-item .form-style:focus {
+    outline: none;
+    border:1px solid #58bff6;
+    color:#58bff6;
+}
+
+div.form-item p.formLabel {
+	position: absolute;
+	left:26px;
+	top:10px;
+	transition:all .4s ease;
+	color:#bbb;
+}
+
+.formTop {
+    top:-22px !important; left:26px;
+     background-color: #fff; padding:0 5px;
+      font-size: 14px;
+       color:#58bff6 !important;
+}
+
+.formStatus {
+    color:#8a8a8a !important;
+}
+
+button[type="button"].login{
+	float:right;
+	width: 112px;
+	height: 37px;
+	-moz-border-radius: 19px;
+	-webkit-border-radius: 19px;
+	border-radius: 19px;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	background-color: #55b1df;
+	border:1px solid #55b1df;
+	border:none;
+	color: #fff;
+	font-weight: bold;
+}
+
+button[type="button"].login:hover {
+    background-color: #fff;
+    border:1px solid #55b1df;
+    color:#55b1df;
+    cursor:pointer;
+}
+
+button[type="button"].login:focus {
+    outline: none;
+}

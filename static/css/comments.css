@@ -1,0 +1,96 @@
+.date {
+    font-size: 11px;
+}
+
+.comment-text {
+    font-size: 12px;
+    margin-left: 4%;
+}
+
+.fs-12 {
+    font-size: 12px;
+}
+
+.shadow-none {
+    box-shadow: none;
+}
+
+.name {
+    color: #007bff;
+}
+
+.cursor:hover {
+    color: blue;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+.textarea {
+    resize: none;
+}
+
+.fa-facebook {
+    color: #3b5999;
+}
+
+.fa-twitter {
+    color: #55acee;
+}
+
+.fa-linkedin {
+    color: #0077B5;
+}
+
+.fa-instagram {
+    color: #e4405f;
+}
+
+.fa-dribbble {
+    color: #ea4c89;
+}
+
+.fa-pinterest {
+    color: #bd081c;
+}
+
+.fa {
+    cursor: pointer;
+}
+
+.gender-radio {
+  float: left;
+  margin: 5px 4px 0px 8px;
+}
+
+.gender-label {
+  float:left;
+}
+
+.delete-post {
+  border: none;
+  background-color: white;
+  font-weight: bold;
+  position: absolute;
+  right: 2.3%;
+  color: lightslategray;
+}
+
+.delete-post:hover {
+  color: red;
+}
+
+.delete-post:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.toolbar {
+  margin-top: -24px;
+  margin-bottom: -8px;
+}
+
+.like-people {
+  font-size: 8px;
+}

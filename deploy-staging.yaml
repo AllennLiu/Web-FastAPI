@@ -1,0 +1,65 @@
+#!/usr/bin/env ansible-playbook
+
+- hosts: staging
+  gather_facts: True
+  vars_files:
+    - ./variables/common.yaml
+  tasks:
+    - name: Print variable
+      debug:
+        msg: "{{ ansible_fqdn }}"
+
+    - name: Delete execution directory
+      file:
+        state: absent
+        path: "{{ exepath }}"
+
+    - name: Create execution directory
+      file:
+        path: "{{ exepath }}"
+        recurse: yes
+        state: directory
+        mode: 0755
+        group: root
+        owner: root
+
+    - name: Find files to copy
+      shell: ls -a . | grep -vE '^\.{1,}|^tools$'
+      args:
+        executable: /bin/bash
+      delegate_to: "localhost"
+      register: files_to_copy
+
+    - name: Print variable
+      debug:
+        msg: "{{ files_to_copy.stdout_lines }}"
+
+    - name: Copy files to remote
+      copy:
+        src:  "{{ item }}"
+        dest: "{{ exepath }}/"
+        owner: root
+        group: root
+        mode:  0755
+      with_items: "{{ files_to_copy.stdout_lines }}"
+
+    - name: Docker login Github registry
+      shell: echo {{ access_token }} | docker login ghcr.io -u {{ access_user }} --password-stdin
+      args:
+        executable: /bin/bash
+      register: shell_result
+
+    - name: Print Result
+      debug:
+        msg: "{{ shell_result.stdout }}"
+
+    - name: Deploy web service
+      shell: "{{ exe_cmd }}"
+      args:
+        chdir: "{{ exepath }}"
+        executable: /bin/bash
+      register: shell_result
+
+    - name: Print Result
+      debug:
+        msg: "{{ shell_result.stdout }}"

@@ -1,0 +1,17 @@
+# CI Settings
+workdir: '<WORK_PATH>'
+exepath: '<EXE_PATH>'
+exe_cmd: '<EXE_CMD>'
+
+# Project Settings
+version: '<VERSION>'
+registry_image: '<REGISTRY_IMAGE>'
+container_name: '<CONTAINER_NAME>'
+
+# Authentication Settings
+srv_user: '<SRV_USER>'
+srv_pass: '<SRV_PASS>'
+srv_port: '<SRV_PORT>'
+access_user: '<GITHUB_REPOSITORY_OWNER>'
+access_token: '<ACCESS_TOKEN>'
+kubernetes_node4: '10.99.104.250'

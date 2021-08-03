@@ -1,0 +1,63 @@
+#!/usr/bin/env ansible-playbook
+
+- hosts: staging
+  gather_facts: True
+  vars_files:
+    - ./variables/common.yaml
+  tasks:
+    - name: Print variable
+      debug:
+        msg: "{{ ansible_fqdn }}"
+
+    - name: Archive docker image
+      shell: |
+        docker save -o /tmp/{{ container_name }}.tar {{ registry_image }}:{{ version }}
+        du -shx /tmp/{{ container_name }}.tar
+      args:
+        executable: /bin/bash
+      register: shell_result
+
+    - name: Print Result
+      debug:
+        msg: "{{ shell_result.stdout }}"
+
+    - name: Fetch achived image to local container
+      fetch:
+        src:  /tmp/{{ container_name }}.tar
+        dest: /tmp/{{ container_name }}.tar
+        flat: yes
+
+    - name: Remove achived image remote
+      file:
+        path: /tmp/{{ container_name }}.tar
+        state: absent
+        force: yes
+
+- hosts: "{{ kubernetes_node4 }}"
+  gather_facts: True
+  vars_files:
+    - ./variables/common.yaml
+  tasks:
+    - name: Print variable
+      debug:
+        msg: "{{ ansible_fqdn }}"
+
+    - name: Copy achived image from container to remote Kubernetes node"
+      copy:
+        src:  /tmp/{{ container_name }}.tar
+        dest: /tmp/{{ container_name }}.tar
+        owner: root
+        group: root
+
+    - name: Docker load achived image
+      shell: |
+        docker load --input {{ container_name }}.tar
+        docker images | grep {{ container_name }}
+      args:
+        chdir: /tmp
+        executable: /bin/bash
+      register: shell_result
+
+    - name: Print Result
+      debug:
+        msg: "{{ shell_result.stdout }}"
