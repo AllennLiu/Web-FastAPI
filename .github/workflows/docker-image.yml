@@ -68,6 +68,7 @@ jobs:
   build:
     runs-on: self-hosted
     needs: varmaps
+    if: contains('refs/heads/staging', github.ref)
     container:
       image: ghcr.io/allennliu/docker:18
       credentials:
@@ -83,9 +84,54 @@ jobs:
         echo $ACCESS_TOKEN | docker login ghcr.io -u $GITHUB_REPOSITORY_OWNER --password-stdin
         docker push ghcr.io/${{ needs.varmaps.outputs.REPO_AUTHOR }}:${{ needs.varmaps.outputs.VERSION }}
 
+  buildx:
+    runs-on: self-hosted
+    needs: varmaps
+    if: contains('refs/heads/main', github.ref)
+    permissions:
+      contents: read
+      packages: write
+    container:
+      image: ghcr.io/allennliu/docker:19
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ACCESS_TOKEN }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Log in to the Container registry
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.ACCESS_TOKEN }}
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      with:
+        images: ${{ needs.varmaps.outputs.REGISTRY_IMAGE }}
+    - name: Build and push Docker image
+      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      with:
+        context: .
+        push: true
+        tags: ${{ needs.varmaps.outputs.REGISTRY_IMAGE }}:${{ needs.varmaps.outputs.VERSION }}
+        labels: ${{ steps.meta.outputs.labels }}
+    - name: Update Package Badge
+      uses: schneegans/dynamic-badges-action@v1.0.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: ab6dc65e1bc6049b57a18f32124f2ce7
+        filename: ${{ needs.varmaps.outputs.PROJECT_NAME }}-package.json
+        label: Package
+        message: v${{ needs.varmaps.outputs.VERSION }}
+        color: lightgrey
+        namedLogo: Docker
+        logoColor: blue
+
   staging:
     runs-on: self-hosted
-    needs: [varmaps, build]
+    needs: [varmaps, build, buildx]
     container:
       image: ghcr.io/allennliu/tool-ansible:1.0.1
       credentials:
@@ -172,7 +218,7 @@ jobs:
       with:
         name: pytest-results
         path: report.xml
-    - name: Create Test Coverage Badge
+    - name: Update Test Coverage Badge
       if: ${{ env.COVERAGE != '' }}
       uses: schneegans/dynamic-badges-action@v1.0.0
       with:
@@ -206,7 +252,7 @@ jobs:
         body: ${{ github.event.head_commit.message }}
         draft: false
         prerelease: false
-    - name: Create Release Badge
+    - name: Update Release Badge
       uses: schneegans/dynamic-badges-action@v1.0.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
@@ -214,13 +260,14 @@ jobs:
         filename: ${{ needs.varmaps.outputs.PROJECT_NAME }}-release.json
         label: Release
         message: v${{ needs.varmaps.outputs.VERSION }}
-        color: blue
+        color: informational
         namedLogo: fastapi
+        logoColor: success
 
   clean:
     runs-on: self-hosted
     if: always()
-    needs: [build, production, pytest, release]
+    needs: [build, buildx, production, pytest, release]
     container:
       image: ghcr.io/allennliu/docker:18
       credentials:

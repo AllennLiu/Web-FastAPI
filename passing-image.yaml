@@ -9,8 +9,22 @@
       debug:
         msg: "{{ ansible_fqdn }}"
 
+    - name: Docker login and pull image from Github registry
+      shell: |
+        echo {{ access_token }} | docker login -u {{ access_user }} {{ registry_image }} --password-stdin
+        docker pull {{ registry_image }}:{{ version }}
+      args:
+        executable: /bin/bash
+      register: shell_result
+
+    - name: Print Result
+      debug:
+        msg: "{{ shell_result.stdout }}"
+
+
     - name: Archive docker image
       shell: |
+        echo {{ access_token }} | docker login -u {{ access_user }} {{ registry_image }} --password-stdin
         docker save -o /tmp/{{ container_name }}.tar {{ registry_image }}:{{ version }}
         du -shx /tmp/{{ container_name }}.tar
       args:

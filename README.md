@@ -2,20 +2,20 @@ Web-FastAPI
 ==================
 
 ## Version
-`Rev: 0.0.2`
+`Rev: 1.0.0`
 
-[![Release Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/0bf7d0bf3675b35eaa46fffc60b4ade0/raw/Web-FastAPI-release.json)](https://github.com/AllennLiu/Web-FastAPI/releases)
+[![Release Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/0bf7d0bf3675b35eaa46fffc60b4ade0/raw/Web-FastAPI-release.json)](https://github.com/AllennLiu/Web-FastAPI/releases) [![Package Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/ab6dc65e1bc6049b57a18f32124f2ce7/raw/Web-FastAPI-package.json)](https://github.com/AllennLiu/Web-FastAPI/pkgs/container/web-fastapi)
 
 ---
 
-## Python Version
-![Python Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/ff710dd6f378c7d82792f9429f65ab31/raw/Python%2520Version)
+## Requirement Version
+![Python Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/ff710dd6f378c7d82792f9429f65ab31/raw/Python%2520Version&logoColor=violet) ![Kubernetes Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/afa8c412f07d7457a79fc0697b816c67/raw/3c75f9fbb513a8ded6d37a83d600422667a6644f/Kubernetes%2520Badge)
 
 ---
 
 ## Status
 
-[![Pipeline Status](https://github.com/AllennLiu/Web-FastAPI/actions/workflows/docker-image.yml/badge.svg)](https://github.com/AllennLiu/Web-FastAPI/actions/workflows/docker-image.yml) ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/cdc11bececff228f66cebd39b8b588dc/raw/Web-FastAPI__heads_main.json)
+[![Pipeline Status](https://github.com/AllennLiu/Web-FastAPI/actions/workflows/docker-image.yml/badge.svg)](https://github.com/AllennLiu/Web-FastAPI/actions/workflows/docker-image.yml) ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/cdc11bececff228f66cebd39b8b588dc/raw/Web-FastAPI__heads_main.json&logoColor=9cf)
 
 ---
 
@@ -55,19 +55,22 @@ Using **`FastAPI` web framework** with _Python_ to build API services, this is *
 
 ## Usage
 
+  - **服務部署在英業達公司內網，外部網路無法直接訪問，有需要可以通過 `VPN` 連線。**
+
+  - **Production 環境**
+
+    - **FastAPI Home - [http://web-fastapi.cloudnative.ies.inventec](http://web-fastapi.cloudnative.ies.inventec)**
+
+  - **Staging 環境**
+
+    - **FastAPI Home - [http://10.99.104.251:8787/login](http://10.99.104.251:8787/login)**
+
   - More API usage please refer to following url:
 
     - **FastAPI Docs  - [http://web-fastapi.cloudnative.ies.inventec/docs](http://web-fastapi.cloudnative.ies.inventec/docs)**
 
     - **FastAPI Redoc - [http://web-fastapi.cloudnative.ies.inventec/redoc](http://web-fastapi.cloudnative.ies.inventec/redoc)**
 
-  - **Production:**
-
-    - **FastAPI Home - [http://web-fastapi.cloudnative.ies.inventec](http://web-fastapi.cloudnative.ies.inventec)**
-
-  - **Staging:**
-
-    - **FastAPI Home - [http://10.99.104.251:8787/login](http://10.99.104.251:8787/login)**
 
 ---
 
@@ -146,7 +149,7 @@ Using **`FastAPI` web framework** with _Python_ to build API services, this is *
 ## Associates
 
   - **Tester**
-    - Liu.Allen
+    - Liu.AllenJH
 
   - **Developer**
     - Liu.AllenJH
@@ -163,12 +166,6 @@ Using **`FastAPI` web framework** with _Python_ to build API services, this is *
 </details>
 
   - **Latest script has been validated by Liu.AllenJH on K8S-Cluster at 2021-08-05.**
-
----
-
-## Coverage
-
-No operation system platform coverage.
 
 ---
 
