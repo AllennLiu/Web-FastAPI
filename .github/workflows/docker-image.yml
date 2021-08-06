@@ -23,113 +23,113 @@ env:
 
 jobs:
 
-  # build:
-  #   runs-on: self-hosted
-  #   container:
-  #     image: ghcr.io/allennliu/docker:18
-  #     credentials:
-  #       username: ${{ github.actor }}
-  #       password: ${{ secrets.ACCESS_TOKEN }}
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Set Environ Variables
-  #     run: |
-  #       echo "REPO_AUTHOR=$(echo $GITHUB_REPOSITORY | awk '{print tolower($0)}')" >> $GITHUB_ENV
-  #       echo "VERSION=$(grep -E '^`Rev:\s' README.md | grep -oE '([0-9]+\.){2}[0-9]+')" >> $GITHUB_ENV
-  #   - name: Build Image
-  #     run: |
-  #       docker build --no-cache -t ghcr.io/${REPO_AUTHOR}:$VERSION .
-  #       docker images | grep -i $GITHUB_REPOSITORY || true
-  #   - name: Publish to Registry
-  #     run: |
-  #       echo $ACCESS_TOKEN | docker login ghcr.io -u $GITHUB_REPOSITORY_OWNER --password-stdin
-  #       docker push ghcr.io/${REPO_AUTHOR}:$VERSION
-
-  # staging:
-  #   runs-on: self-hosted
-  #   needs: build
-  #   container:
-  #     image: ghcr.io/allennliu/tool-ansible:1.0.1
-  #     credentials:
-  #       username: ${{ github.actor }}
-  #       password: ${{ secrets.ACCESS_TOKEN }}
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Set Environ Variables
-  #     run: |
-  #       echo "VERSION=$(grep -E '^`Rev:\s' README.md | grep -oE '([0-9]+\.){2}[0-9]+')" >> $GITHUB_ENV
-  #       echo "PROJECT_NAME=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_ENV
-  #       echo "CONTAINER_NAME=$(basename $GITHUB_REPOSITORY | awk '{print tolower($0)}')" >> $GITHUB_ENV
-  #       echo "REGISTRY_IMAGE=ghcr.io/$(echo $GITHUB_REPOSITORY | awk '{print tolower($0)}')" >> $GITHUB_ENV
-  #       echo "EXE_PATH=${WORK_PATH}/$(basename $GITHUB_REPOSITORY)" >> $GITHUB_ENV
-  #   - name: Configure Hosts
-  #     if: contains('refs/heads/main', github.ref)
-  #     run: |
-  #       sed -i "s,<SRV_USER>,${SRV_USER},g" ${PWD}/hosts
-  #       sed -i "s,<SRV_PASS>,${SRV_PASS},g" ${PWD}/hosts
-  #       sed -i "s,<SRV_PORT>,${SRV_PORT},g" ${PWD}/hosts
-  #       sed -i "s,<SRV_IP>,${SRV_IP},g"     ${PWD}/hosts
-  #       sed -i -E "s,\;,\n,g"               ${PWD}/hosts
-  #   - name: Configure Ansible
-  #     run: |
-  #       exe_cmd="bash start.sh -v $VERSION -p $PROJECT_NAME -n $CONTAINER_NAME -i $REGISTRY_IMAGE -P $MOUNT_PORT -M1 $MOUNT_PATH_1 -M2 $MOUNT_PATH_2"
-  #       sed -i "s,<EXE_CMD>,${exe_cmd},g"     ${PWD}/variables/common.yaml
-  #       sed -i "s,<VERSION>,${VERSION},g"     ${PWD}/variables/common.yaml
-  #       sed -i "s,<WORK_PATH>,${WORK_PATH},g" ${PWD}/variables/common.yaml
-  #       sed -i "s,<EXE_PATH>,${EXE_PATH},g"   ${PWD}/variables/common.yaml
-  #       sed -i "s,<SRV_USER>,${SRV_USER},g"   ${PWD}/variables/common.yaml
-  #       sed -i "s,<SRV_PASS>,${SRV_PASS},g"   ${PWD}/variables/common.yaml
-  #       sed -i "s,<SRV_PORT>,${SRV_PORT},g"   ${PWD}/variables/common.yaml
-  #       sed -i "s,<ACCESS_TOKEN>,${ACCESS_TOKEN},g"     ${PWD}/variables/common.yaml
-  #       sed -i "s,<REGISTRY_IMAGE>,${REGISTRY_IMAGE},g" ${PWD}/variables/common.yaml
-  #       sed -i "s,<CONTAINER_NAME>,${CONTAINER_NAME},g" ${PWD}/variables/common.yaml
-  #       sed -i "s,<GITHUB_REPOSITORY_OWNER>,${GITHUB_REPOSITORY_OWNER},g" ${PWD}/variables/common.yaml
-  #   - name: Deploy Staging Service
-  #     if: contains('refs/heads/staging', github.ref)
-  #     run: ansible-playbook -i ${PWD}/hosts deploy-staging.yaml
-
-  #   # Because of the IT domain resolve policy, we couldn't
-  #   # pulling image from Github directly on Kubernetes node.
-  #   # So this is going to archive image and then pass it to
-  #   # deployment Kubernetes node. finally, loading image to
-  #   # local Docker image instantly.
-  #   - name: Pass Image to Production Server
-  #     if: contains('refs/heads/main', github.ref)
-  #     run: ansible-playbook -i ${PWD}/hosts passing-image.yaml
-
-  # production:
-  #   runs-on: self-hosted
-  #   needs: staging
-  #   if: contains('refs/heads/main', github.ref)
-  #   container:
-  #     image: ghcr.io/allennliu/tool-kubectl-deployment:1.0.4
-  #     credentials:
-  #       username: ${{ github.actor }}
-  #       password: ${{ secrets.ACCESS_TOKEN }}
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Set Environ Variables
-  #     run: |
-  #       echo "VERSION=$(grep -E '^`Rev:\s' README.md | grep -oE '([0-9]+\.){2}[0-9]+')" >> $GITHUB_ENV
-  #       echo "PROJECT_NAME=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_ENV
-  #       echo "CONTAINER_NAME=$(basename $GITHUB_REPOSITORY | awk '{print tolower($0)}')" >> $GITHUB_ENV
-  #       echo "REGISTRY_IMAGE=ghcr.io/$(echo $GITHUB_REPOSITORY | awk '{print tolower($0)}')" >> $GITHUB_ENV
-  #       echo "EXE_PATH=${WORK_PATH}/$(basename $GITHUB_REPOSITORY)" >> $GITHUB_ENV
-  #   - name: Configure Hosts
-  #     run: |
-  #       sed -i "s,<SRV_USER>,${SRV_USER},g" ${PWD}/hosts
-  #       sed -i "s,<SRV_PASS>,${SRV_PASS},g" ${PWD}/hosts
-  #       sed -i "s,<SRV_PORT>,${SRV_PORT},g" ${PWD}/hosts
-  #       sed -i "s,<SRV_IP>,${SRV_IP},g"     ${PWD}/hosts
-  #       sed -i -E "s,\;,\n,g"               ${PWD}/hosts
-  #   - name: Deploy Production Service
-  #     run: |
-  #       bash start.sh --k8s-run -v $VERSION -p $PROJECT_NAME -n $CONTAINER_NAME \
-  #         -i $REGISTRY_IMAGE -MP $MOUNT_PORT -M1 $MOUNT_PATH_1 -M2 $MOUNT_PATH_2
-
-  pytest:
+  varmaps:
     runs-on: self-hosted
-    #needs: production
+    container:
+      image: ghcr.io/allennliu/docker:18
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ACCESS_TOKEN }}
+    outputs:
+      VERSION: ${{ steps.var1.outputs.version }}
+      VER_MATCH: ${{ steps.var2.outputs.match }}
+      PROJECT_NAME: ${{ steps.var3.outputs.project_name }}
+      REPO_AUTHOR: ${{ steps.var4.outputs.repo_author }}
+      CONTAINER_NAME: ${{ steps.var5.outputs.container_name }}
+      REGISTRY_IMAGE: ${{ steps.var6.outputs.registry_image }}
+      EXE_PATH: ${{ steps.var7.outputs.exe_path }}
+      BRANCH: ${{ steps.var8.outputs.branch }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set Environ Variables
+      run: echo "VERSION=$(grep -E '^`Rev:\s' README.md | grep -oE '([0-9]+\.){2}[0-9]+')" >> $GITHUB_ENV
+    - id: var1
+      run: echo "::set-output name=version::${{ env.VERSION }}"
+    - uses: actions-ecosystem/action-regex-match@v2
+      id: regex-ver-match
+      with:
+        text: ${{ env.VERSION }}
+        regex: '\.[1-9][0-9]{0,}$'
+    - id: var2
+      run: echo "::set-output name=match::${{ steps.regex-ver-match.outputs.match }}"
+    - id: var3
+      run: echo "::set-output name=project_name::$(basename $GITHUB_REPOSITORY)"
+    - id: var4
+      run: echo "::set-output name=repo_author::$(echo $GITHUB_REPOSITORY | awk '{print tolower($0)}')"
+    - id: var5
+      run: echo "::set-output name=container_name::$(basename $GITHUB_REPOSITORY | awk '{print tolower($0)}')"
+    - id: var6
+      run: echo "::set-output name=registry_image::ghcr.io/$(echo $GITHUB_REPOSITORY | awk '{print tolower($0)}')"
+    - id: var7
+      run: echo "::set-output name=exe_path::${WORK_PATH}/$(basename $GITHUB_REPOSITORY)"
+    - id: var8
+      run: echo "::set-output name=branch::$(echo $GITHUB_REF | awk -F\/ '{print $2"_"$3}')"
+
+  build:
+    runs-on: self-hosted
+    needs: varmaps
+    container:
+      image: ghcr.io/allennliu/docker:18
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ACCESS_TOKEN }}
+    steps:
+    - name: Build Image
+      run: |
+        docker build --no-cache -t ghcr.io/${{ needs.varmaps.outputs.REPO_AUTHOR }}:${{ needs.varmaps.outputs.VERSION }} .
+        docker images | grep -i $GITHUB_REPOSITORY || true
+    - name: Publish to Registry
+      run: |
+        echo $ACCESS_TOKEN | docker login ghcr.io -u $GITHUB_REPOSITORY_OWNER --password-stdin
+        docker push ghcr.io/${{ needs.varmaps.outputs.REPO_AUTHOR }}:${{ needs.varmaps.outputs.VERSION }}
+
+  staging:
+    runs-on: self-hosted
+    needs: [varmaps, build]
+    container:
+      image: ghcr.io/allennliu/tool-ansible:1.0.1
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ACCESS_TOKEN }}
+    steps:
+    - name: Configure Hosts
+      if: contains('refs/heads/main', github.ref)
+      run: |
+        sed -i "s,<SRV_USER>,${SRV_USER},g" ${PWD}/hosts
+        sed -i "s,<SRV_PASS>,${SRV_PASS},g" ${PWD}/hosts
+        sed -i "s,<SRV_PORT>,${SRV_PORT},g" ${PWD}/hosts
+        sed -i "s,<SRV_IP>,${SRV_IP},g"     ${PWD}/hosts
+        sed -i -E "s,\;,\n,g"               ${PWD}/hosts
+    - name: Configure Ansible
+      run: |
+        exe_cmd="bash start.sh -v ${{ needs.varmaps.outputs.VERSION }} -p ${{ needs.varmaps.outputs.PROJECT_NAME }} -n ${{ needs.varmaps.outputs.CONTAINER_NAME }} -i ${{ needs.varmaps.outputs.REGISTRY_IMAGE }} -P $MOUNT_PORT -M1 $MOUNT_PATH_1 -M2 $MOUNT_PATH_2"
+        sed -i "s,<EXE_CMD>,${exe_cmd},g"     ${PWD}/variables/common.yaml
+        sed -i "s,<WORK_PATH>,${WORK_PATH},g" ${PWD}/variables/common.yaml
+        sed -i "s,<SRV_USER>,${SRV_USER},g"   ${PWD}/variables/common.yaml
+        sed -i "s,<SRV_PASS>,${SRV_PASS},g"   ${PWD}/variables/common.yaml
+        sed -i "s,<SRV_PORT>,${SRV_PORT},g"   ${PWD}/variables/common.yaml
+        sed -i "s,<ACCESS_TOKEN>,${ACCESS_TOKEN},g" ${PWD}/variables/common.yaml
+        sed -i "s,<VERSION>,${{ needs.varmaps.outputs.VERSION }},g"   ${PWD}/variables/common.yaml
+        sed -i "s,<EXE_PATH>,${{ needs.varmaps.outputs.EXE_PATH }},g" ${PWD}/variables/common.yaml
+        sed -i "s,<REGISTRY_IMAGE>,${{ needs.varmaps.outputs.REGISTRY_IMAGE }},g" ${PWD}/variables/common.yaml
+        sed -i "s,<CONTAINER_NAME>,${{ needs.varmaps.outputs.CONTAINER_NAME }},g" ${PWD}/variables/common.yaml
+        sed -i "s,<GITHUB_REPOSITORY_OWNER>,${GITHUB_REPOSITORY_OWNER},g" ${PWD}/variables/common.yaml
+    - name: Deploy Staging Service
+      if: contains('refs/heads/staging', github.ref)
+      run: ansible-playbook -i ${PWD}/hosts deploy-staging.yaml
+
+    # Because of the IT domain resolve policy, we couldn't
+    # pulling image from Github directly on Kubernetes node.
+    # So this is going to archive image and then pass it to
+    # deployment Kubernetes node. finally, loading image to
+    # local Docker image instantly.
+    - name: Pass Image to Production Server
+      if: contains('refs/heads/main', github.ref)
+      run: ansible-playbook -i ${PWD}/hosts passing-image.yaml
+
+  production:
+    runs-on: self-hosted
+    needs: [varmaps, staging]
     if: contains('refs/heads/main', github.ref)
     container:
       image: ghcr.io/allennliu/tool-kubectl-deployment:1.0.4
@@ -137,15 +137,31 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.ACCESS_TOKEN }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set Environ Variables
+    - name: Configure Hosts
       run: |
-        echo "BRANCH=$(echo $GITHUB_REF | awk -F\/ '{print $2"_"$3}')" >> $GITHUB_ENV
-        echo "PROJECT_NAME=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_ENV
-        echo "CONTAINER_NAME=$(basename $GITHUB_REPOSITORY | awk '{print tolower($0)}')" >> $GITHUB_ENV
+        sed -i "s,<SRV_USER>,${SRV_USER},g" ${PWD}/hosts
+        sed -i "s,<SRV_PASS>,${SRV_PASS},g" ${PWD}/hosts
+        sed -i "s,<SRV_PORT>,${SRV_PORT},g" ${PWD}/hosts
+        sed -i "s,<SRV_IP>,${SRV_IP},g"     ${PWD}/hosts
+        sed -i -E "s,\;,\n,g"               ${PWD}/hosts
+    - name: Deploy Production Service
+      run: |
+        bash start.sh --k8s-run -v ${{ needs.varmaps.outputs.VERSION }} -p ${{ needs.varmaps.outputs.PROJECT_NAME }} -n ${{ needs.varmaps.outputs.CONTAINER_NAME }} \
+          -i ${{ needs.varmaps.outputs.REGISTRY_IMAGE }} -MP $MOUNT_PORT -M1 $MOUNT_PATH_1 -M2 $MOUNT_PATH_2
+
+  pytest:
+    runs-on: self-hosted
+    needs: [varmaps, production]
+    if: contains('refs/heads/main', github.ref)
+    container:
+      image: ghcr.io/allennliu/tool-kubectl-deployment:1.0.4
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ACCESS_TOKEN }}
+    steps:
     - name: Run Unit Test
       run: |
-        export POD=$(kubectl get pods -n kube-ops | grep -oE "^${CONTAINER_NAME}-(\w+\-)?\w+" | head -n1)
+        export POD=$(kubectl get pods -n kube-ops | grep -oE "^${{ needs.varmaps.outputs.CONTAINER_NAME }}-(\w+\-)?\w+" | head -n1)
         echo -e "\nStarting run Pytest on pod: ${POD}..\n"
         kubectl exec -t $POD -n kube-ops -- bash -c 'cd tests && pytest' | tee pytest.log
         kubectl exec -t $POD -n kube-ops -- bash -c 'cd tests && cat report.xml' > report.xml
@@ -157,27 +173,60 @@ jobs:
         name: pytest-results
         path: report.xml
     - name: Create Test Coverage Badge
-      if: always()
+      if: ${{ env.COVERAGE != '' }}
       uses: schneegans/dynamic-badges-action@v1.0.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
         gistID: cdc11bececff228f66cebd39b8b588dc
-        filename: ${{ env.PROJECT_NAME }}__${{ env.BRANCH }}.json
+        filename: ${{ needs.varmaps.outputs.PROJECT_NAME }}__${{ needs.varmaps.outputs.BRANCH }}.json
         label: Test Coverage
         message: ${{ env.COVERAGE }}
         color: green
         namedLogo: pytest
 
-  # clean:
-  #   runs-on: self-hosted
-  #   if: always()
-  #   needs: [build, production, pytest]
-  #   container:
-  #     image: ghcr.io/allennliu/docker:18
-  #     credentials:
-  #       username: ${{ github.actor }}
-  #       password: ${{ secrets.ACCESS_TOKEN }}
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Clean Environment
-  #     run: sh tools/pipeline_clean.sh
+  release:
+    runs-on: self-hosted
+    if: |
+      contains('refs/heads/main', github.ref) && needs.varmaps.outputs.VER_MATCH == ''
+    needs: [varmaps, pytest]
+    container:
+      image: ghcr.io/allennliu/docker:18
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ACCESS_TOKEN }}
+    steps:
+    - name: Publish Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ needs.varmaps.outputs.VERSION }}
+        release_name: Version ${{ needs.varmaps.outputs.VERSION }}
+        body: ${{ github.event.head_commit.message }}
+        draft: false
+        prerelease: false
+    - name: Create Release Badge
+      uses: schneegans/dynamic-badges-action@v1.0.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 0bf7d0bf3675b35eaa46fffc60b4ade0
+        filename: ${{ needs.varmaps.outputs.PROJECT_NAME }}-release.json
+        label: Release
+        message: v${{ needs.varmaps.outputs.VERSION }}
+        color: blue
+        namedLogo: fastapi
+
+  clean:
+    runs-on: self-hosted
+    if: always()
+    needs: [build, production, pytest, release]
+    container:
+      image: ghcr.io/allennliu/docker:18
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ACCESS_TOKEN }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Clean Environment
+      run: sh tools/pipeline_clean.sh

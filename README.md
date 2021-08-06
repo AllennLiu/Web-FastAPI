@@ -4,6 +4,8 @@ Web-FastAPI
 ## Version
 `Rev: 0.0.2`
 
+[![Release Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/0bf7d0bf3675b35eaa46fffc60b4ade0/raw/Web-FastAPI-release.json)](https://github.com/AllennLiu/Web-FastAPI/releases)
+
 ---
 
 ## Python Version
@@ -13,7 +15,7 @@ Web-FastAPI
 
 ## Status
 
-![web-fastapi workflow](https://github.com/AllennLiu/Web-FastAPI/actions/workflows/docker-image.yml/badge.svg) ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/cdc11bececff228f66cebd39b8b588dc/raw/Web-FastAPI__heads_main.json)
+[![Pipeline Status](https://github.com/AllennLiu/Web-FastAPI/actions/workflows/docker-image.yml/badge.svg)](https://github.com/AllennLiu/Web-FastAPI/actions/workflows/docker-image.yml) ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/cdc11bececff228f66cebd39b8b588dc/raw/Web-FastAPI__heads_main.json)
 
 ---
 
