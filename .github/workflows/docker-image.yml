@@ -131,6 +131,7 @@ jobs:
 
   staging:
     runs-on: self-hosted
+    if: always()
     needs: [varmaps, build, buildx]
     container:
       image: ghcr.io/allennliu/tool-ansible:1.0.1

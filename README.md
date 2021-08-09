@@ -2,7 +2,7 @@ Web-FastAPI
 ==================
 
 ## Version
-`Rev: 1.0.0`
+`Rev: 1.0.1`
 
 [![Release Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/0bf7d0bf3675b35eaa46fffc60b4ade0/raw/Web-FastAPI-release.json)](https://github.com/AllennLiu/Web-FastAPI/releases) [![Package Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AllennLiu/ab6dc65e1bc6049b57a18f32124f2ce7/raw/Web-FastAPI-package.json)](https://github.com/AllennLiu/Web-FastAPI/pkgs/container/web-fastapi)
 

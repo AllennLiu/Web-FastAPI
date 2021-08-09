@@ -48,6 +48,10 @@ class TagsMetadata:
                                 "test the connection of _MongoDB_ by " +
                                 "operation **Post/Delete/Put/Get** in " +
                                 "test collection.")
+            },
+            {
+                "name": "User",
+                "description": "Create an user in _MongoDB_."
             }
         ]
 
